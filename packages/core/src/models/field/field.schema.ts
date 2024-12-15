@@ -28,6 +28,7 @@ import {
   userFieldOptionsSchema,
   createdByFieldOptionsSchema,
   lastModifiedByFieldOptionsSchema,
+  barcodeFieldOptionsSchema,
 } from './derivate';
 import { unionFormattingSchema } from './formatting';
 import { unionShowAsSchema } from './show-as';
@@ -73,6 +74,7 @@ export const unionFieldOptions = z.union([
   userFieldOptionsSchema.strict(),
   createdByFieldOptionsSchema.strict(),
   lastModifiedByFieldOptionsSchema.strict(),
+  barcodeFieldOptionsSchema.strict(),
 ]);
 
 export const unionFieldOptionsVoSchema = z.union([
@@ -83,6 +85,7 @@ export const unionFieldOptionsVoSchema = z.union([
   autoNumberFieldOptionsSchema.strict(),
   createdTimeFieldOptionsSchema.strict(),
   lastModifiedTimeFieldOptionsSchema.strict(),
+  barcodeFieldOptionsSchema.strict(),
 ]);
 
 export const unionFieldOptionsRoSchema = z.union([
@@ -93,6 +96,7 @@ export const unionFieldOptionsRoSchema = z.union([
   autoNumberFieldOptionsRoSchema.strict(),
   createdTimeFieldOptionsRoSchema.strict(),
   lastModifiedTimeFieldOptionsRoSchema.strict(),
+  barcodeFieldOptionsSchema.strict(),
 ]);
 
 export const commonOptionsSchema = z.object({
@@ -268,6 +272,8 @@ export const getOptionsSchema = (type: FieldType) => {
       return createdByFieldOptionsSchema;
     case FieldType.LastModifiedBy:
       return lastModifiedByFieldOptionsSchema;
+    case FieldType.Barcode:
+      return barcodeFieldOptionsSchema;
     case FieldType.Duration:
     case FieldType.Count:
     case FieldType.Button:

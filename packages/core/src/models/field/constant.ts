@@ -21,6 +21,7 @@ export enum FieldType {
   LastModifiedBy = 'lastModifiedBy',
   AutoNumber = 'autoNumber',
   Button = 'button',
+  Barcode = 'barcode',
 }
 
 export enum DbFieldType {
@@ -47,7 +48,6 @@ export enum Relationship {
   ManyOne = 'manyOne',
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const RelationshipRevert = {
   [Relationship.OneMany]: Relationship.ManyOne,
   [Relationship.ManyOne]: Relationship.OneMany,
@@ -74,6 +74,7 @@ export const PRIMARY_SUPPORTED_TYPES = new Set([
   FieldType.CreatedBy,
   FieldType.LastModifiedBy,
   FieldType.AutoNumber,
+  FieldType.Barcode,
 ]);
 
 export const IMPORT_SUPPORTED_TYPES = [
@@ -86,6 +87,7 @@ export const IMPORT_SUPPORTED_TYPES = [
   FieldType.MultipleSelect,
   FieldType.SingleSelect,
   FieldType.User,
+  FieldType.Barcode,
 ];
 
 export const UNIQUE_VALIDATION_FIELD_TYPES = new Set([
@@ -93,6 +95,7 @@ export const UNIQUE_VALIDATION_FIELD_TYPES = new Set([
   FieldType.LongText,
   FieldType.Number,
   FieldType.Date,
+  FieldType.Barcode,
 ]);
 
 export const NOT_NULL_VALIDATION_FIELD_TYPES = new Set([
@@ -106,4 +109,5 @@ export const NOT_NULL_VALIDATION_FIELD_TYPES = new Set([
   FieldType.Rating,
   FieldType.Attachment,
   FieldType.Link,
+  FieldType.Barcode,
 ]);
