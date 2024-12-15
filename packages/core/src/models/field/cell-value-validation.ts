@@ -53,6 +53,8 @@ export const validateCellValue = (field: IFieldVo, cellValue: unknown) => {
       const schema = getFormulaCellValueSchema(cellValueType);
       return validateWithSchema(schema, cellValue);
     }
+    case FieldType.Barcode:
+      return validateWithSchema(singleLineTextCelValueSchema, cellValue);
     case FieldType.Button:
     case FieldType.Count:
     case FieldType.Duration:

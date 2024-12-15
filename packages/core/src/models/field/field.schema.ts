@@ -1,8 +1,8 @@
+import { z } from 'zod';
 import type { RefinementCtx } from 'zod';
 import { assertNever } from '../../asserts';
 import type { IEnsureKeysMatchInterface } from '../../types';
 import { IdPrefix } from '../../utils';
-import { z } from '../../zod';
 import { CellValueType, DbFieldType, FieldType } from './constant';
 import {
   checkboxFieldOptionsSchema,
@@ -33,23 +33,40 @@ import {
 import { unionFormattingSchema } from './formatting';
 import { unionShowAsSchema } from './show-as';
 
-export const lookupOptionsVoSchema = linkFieldOptionsSchema
-  .pick({
-    foreignTableId: true,
-    lookupFieldId: true,
-    relationship: true,
-    fkHostTableName: true,
-    selfKeyName: true,
-    foreignKeyName: true,
-    filter: true,
+export const commonOptionsSchema = z
+  .object({
+    showAs: unionShowAsSchema.optional(),
+    formatting: unionFormattingSchema.optional(),
   })
-  .merge(
-    z.object({
-      linkFieldId: z.string().openapi({
-        description: 'The id of Linked record field to use for lookup',
-      }),
-    })
-  );
+  .strict();
+
+// Remove duplicate barcode schema definitions since they're now in barcode.field.ts
+export type { IBarcodeFieldOptions } from './derivate/barcode.field';
+
+export const lookupOptionsVoSchema = z.object({
+  foreignTableId: z.string().openapi({
+    description: 'the table this field is linked to',
+  }),
+  lookupFieldId: z.string().openapi({
+    description: 'the field in the foreign table that will be displayed',
+  }),
+  relationship: z.string().openapi({
+    description: 'describe the relationship from this table to the foreign table',
+  }),
+  fkHostTableName: z.string().openapi({
+    description: 'the table name for storing keys',
+  }),
+  selfKeyName: z.string().openapi({
+    description: 'the name of the field that stores the current table primary key',
+  }),
+  foreignKeyName: z.string().openapi({
+    description: 'The name of the field that stores the foreign table primary key',
+  }),
+  filter: z.any().optional(),
+  linkFieldId: z.string().openapi({
+    description: 'The id of Linked record field to use for lookup',
+  }),
+});
 
 export type ILookupOptionsVo = z.infer<typeof lookupOptionsVoSchema>;
 
@@ -62,47 +79,71 @@ export const lookupOptionsRoSchema = lookupOptionsVoSchema.pick({
 
 export type ILookupOptionsRo = z.infer<typeof lookupOptionsRoSchema>;
 
-export const unionFieldOptions = z.union([
-  rollupFieldOptionsSchema.strict(),
-  formulaFieldOptionsSchema.strict(),
-  linkFieldOptionsSchema.strict(),
-  dateFieldOptionsSchema.strict(),
-  checkboxFieldOptionsSchema.strict(),
-  attachmentFieldOptionsSchema.strict(),
-  singlelineTextFieldOptionsSchema.strict(),
-  ratingFieldOptionsSchema.strict(),
-  userFieldOptionsSchema.strict(),
-  createdByFieldOptionsSchema.strict(),
-  lastModifiedByFieldOptionsSchema.strict(),
-  barcodeFieldOptionsSchema.strict(),
+export const unionFieldOptions = z.discriminatedUnion('type', [
+  singlelineTextFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleLineText) }),
+  longTextFieldOptionsSchema.extend({ type: z.literal(FieldType.LongText) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleSelect) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.MultipleSelect) }),
+  numberFieldOptionsSchema.extend({ type: z.literal(FieldType.Number) }),
+  checkboxFieldOptionsSchema.extend({ type: z.literal(FieldType.Checkbox) }),
+  ratingFieldOptionsSchema.extend({ type: z.literal(FieldType.Rating) }),
+  attachmentFieldOptionsSchema.extend({ type: z.literal(FieldType.Attachment) }),
+  dateFieldOptionsSchema.extend({ type: z.literal(FieldType.Date) }),
+  createdTimeFieldOptionsSchema.extend({ type: z.literal(FieldType.CreatedTime) }),
+  lastModifiedTimeFieldOptionsSchema.extend({ type: z.literal(FieldType.LastModifiedTime) }),
+  autoNumberFieldOptionsSchema.extend({ type: z.literal(FieldType.AutoNumber) }),
+  userFieldOptionsSchema.extend({ type: z.literal(FieldType.User) }),
+  createdByFieldOptionsSchema.extend({ type: z.literal(FieldType.CreatedBy) }),
+  lastModifiedByFieldOptionsSchema.extend({ type: z.literal(FieldType.LastModifiedBy) }),
+  linkFieldOptionsSchema.extend({ type: z.literal(FieldType.Link) }),
+  formulaFieldOptionsSchema.extend({ type: z.literal(FieldType.Formula) }),
+  rollupFieldOptionsSchema.extend({ type: z.literal(FieldType.Rollup) }),
+  barcodeFieldOptionsSchema.extend({ type: z.literal(FieldType.Barcode) }),
 ]);
 
-export const unionFieldOptionsVoSchema = z.union([
-  unionFieldOptions,
-  linkFieldOptionsSchema.strict(),
-  selectFieldOptionsSchema.strict(),
-  numberFieldOptionsSchema.strict(),
-  autoNumberFieldOptionsSchema.strict(),
-  createdTimeFieldOptionsSchema.strict(),
-  lastModifiedTimeFieldOptionsSchema.strict(),
-  barcodeFieldOptionsSchema.strict(),
+export const unionFieldOptionsVoSchema = z.discriminatedUnion('type', [
+  rollupFieldOptionsSchema.extend({ type: z.literal(FieldType.Rollup) }),
+  formulaFieldOptionsSchema.extend({ type: z.literal(FieldType.Formula) }),
+  linkFieldOptionsSchema.extend({ type: z.literal(FieldType.Link) }),
+  dateFieldOptionsSchema.extend({ type: z.literal(FieldType.Date) }),
+  singlelineTextFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleLineText) }),
+  longTextFieldOptionsSchema.extend({ type: z.literal(FieldType.LongText) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleSelect) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.MultipleSelect) }),
+  numberFieldOptionsSchema.extend({ type: z.literal(FieldType.Number) }),
+  checkboxFieldOptionsSchema.extend({ type: z.literal(FieldType.Checkbox) }),
+  ratingFieldOptionsSchema.extend({ type: z.literal(FieldType.Rating) }),
+  attachmentFieldOptionsSchema.extend({ type: z.literal(FieldType.Attachment) }),
+  createdTimeFieldOptionsSchema.extend({ type: z.literal(FieldType.CreatedTime) }),
+  lastModifiedTimeFieldOptionsSchema.extend({ type: z.literal(FieldType.LastModifiedTime) }),
+  autoNumberFieldOptionsSchema.extend({ type: z.literal(FieldType.AutoNumber) }),
+  userFieldOptionsSchema.extend({ type: z.literal(FieldType.User) }),
+  createdByFieldOptionsSchema.extend({ type: z.literal(FieldType.CreatedBy) }),
+  lastModifiedByFieldOptionsSchema.extend({ type: z.literal(FieldType.LastModifiedBy) }),
+  barcodeFieldOptionsSchema.extend({ type: z.literal(FieldType.Barcode) }),
 ]);
 
-export const unionFieldOptionsRoSchema = z.union([
-  unionFieldOptions,
-  linkFieldOptionsRoSchema.strict(),
-  selectFieldOptionsRoSchema.strict(),
-  numberFieldOptionsRoSchema.strict(),
-  autoNumberFieldOptionsRoSchema.strict(),
-  createdTimeFieldOptionsRoSchema.strict(),
-  lastModifiedTimeFieldOptionsRoSchema.strict(),
-  barcodeFieldOptionsSchema.strict(),
+export const unionFieldOptionsRoSchema = z.discriminatedUnion('type', [
+  rollupFieldOptionsSchema.extend({ type: z.literal(FieldType.Rollup) }),
+  formulaFieldOptionsSchema.extend({ type: z.literal(FieldType.Formula) }),
+  linkFieldOptionsRoSchema.extend({ type: z.literal(FieldType.Link) }),
+  dateFieldOptionsSchema.extend({ type: z.literal(FieldType.Date) }),
+  singlelineTextFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleLineText) }),
+  longTextFieldOptionsSchema.extend({ type: z.literal(FieldType.LongText) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.SingleSelect) }),
+  selectFieldOptionsSchema.extend({ type: z.literal(FieldType.MultipleSelect) }),
+  numberFieldOptionsRoSchema.extend({ type: z.literal(FieldType.Number) }),
+  checkboxFieldOptionsSchema.extend({ type: z.literal(FieldType.Checkbox) }),
+  ratingFieldOptionsSchema.extend({ type: z.literal(FieldType.Rating) }),
+  attachmentFieldOptionsSchema.extend({ type: z.literal(FieldType.Attachment) }),
+  createdTimeFieldOptionsRoSchema.extend({ type: z.literal(FieldType.CreatedTime) }),
+  lastModifiedTimeFieldOptionsRoSchema.extend({ type: z.literal(FieldType.LastModifiedTime) }),
+  autoNumberFieldOptionsRoSchema.extend({ type: z.literal(FieldType.AutoNumber) }),
+  userFieldOptionsSchema.extend({ type: z.literal(FieldType.User) }),
+  createdByFieldOptionsSchema.extend({ type: z.literal(FieldType.CreatedBy) }),
+  lastModifiedByFieldOptionsSchema.extend({ type: z.literal(FieldType.LastModifiedBy) }),
+  barcodeFieldOptionsSchema.extend({ type: z.literal(FieldType.Barcode) }),
 ]);
-
-export const commonOptionsSchema = z.object({
-  showAs: unionShowAsSchema.optional(),
-  formatting: unionFormattingSchema.optional(),
-});
 
 export type IFieldOptionsRo = z.infer<typeof unionFieldOptionsRoSchema>;
 export type IFieldOptionsVo = z.infer<typeof unionFieldOptionsVoSchema>;
@@ -283,13 +324,15 @@ export const getOptionsSchema = (type: FieldType) => {
   }
 };
 
-const refineOptions = (
-  data: {
+const refineOptions = <
+  T extends {
     type: FieldType;
     isLookup?: boolean;
     lookupOptions?: ILookupOptionsRo;
     options?: IFieldOptionsRo;
   },
+>(
+  data: T,
   ctx: RefinementCtx
 ) => {
   const { type, isLookup, lookupOptions, options } = data;

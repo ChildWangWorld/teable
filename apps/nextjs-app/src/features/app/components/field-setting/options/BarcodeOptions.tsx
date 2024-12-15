@@ -18,11 +18,16 @@ const BarcodeScanner: React.FC<{ onResult: (value: string) => void }> = ({ onRes
 
   return (
     <div className="relative">
-      <video ref={ref} className="w-full h-64 rounded-lg">
-        <track kind="captions" src="" label={t('field.editor.scannerCaption', '扫码区域')} />
+      <video ref={ref} className="h-64 w-full rounded-lg">
+        <track
+          kind="captions"
+          src=""
+          label={t('field.editor.scannerCaption', '扫码区域')}
+          default
+        />
       </video>
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-48 h-48 border-2 border-primary rounded-lg" />
+        <div className="size-48 rounded-lg border-2 border-primary" />
       </div>
     </div>
   );
@@ -38,6 +43,7 @@ export const BarcodeOptions: React.FC<IFieldOptionsProps> = ({ field, onChange }
     const numberValue = Number(value);
     if (!isNaN(numberValue) && value.trim() !== '') {
       console.log('Scanned number:', numberValue);
+      onChange({ defaultValue: numberValue });
       setIsScanning(false);
       return;
     }
@@ -45,10 +51,12 @@ export const BarcodeOptions: React.FC<IFieldOptionsProps> = ({ field, onChange }
     try {
       new URL(value);
       console.log('Scanned URL:', value);
+      onChange({ defaultValue: value });
       setIsScanning(false);
       return;
     } catch {
       console.log('Scanned text:', value);
+      onChange({ defaultValue: value });
       setIsScanning(false);
     }
   };

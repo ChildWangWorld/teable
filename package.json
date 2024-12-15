@@ -58,7 +58,8 @@
     "run:plugin": "pnpm -F '@teable/plugin' dev"
   },
   "dependencies": {
-    "cross-env": "7.0.3"
+    "cross-env": "7.0.3",
+    "react-zxing": "2.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.1",

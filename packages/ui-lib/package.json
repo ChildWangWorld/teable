@@ -142,6 +142,7 @@
     "@radix-ui/react-tooltip": "1.0.7",
     "@teable/icons": "workspace:^",
     "@teable/next-themes": "0.3.5",
+    "@zxing/browser": "0.1.5",
     "@zxing/library": "0.21.3",
     "class-variance-authority": "0.7.0",
     "clsx": "2.1.0",
