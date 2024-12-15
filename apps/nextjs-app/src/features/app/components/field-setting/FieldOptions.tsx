@@ -15,6 +15,7 @@ import type {
   ILongTextFieldOptions,
 } from '@teable/core';
 import { FieldType } from '@teable/core';
+import { BarcodeOptions } from './options/BarcodeOptions';
 import { CheckboxOptions } from './options/CheckboxOptions';
 import { CreatedTimeOptions } from './options/CreatedTimeOptions';
 import { DateOptions } from './options/DateOptions';
@@ -144,6 +145,8 @@ export const FieldOptions: React.FC<IFieldOptionsProps> = ({ field, onChange }) 
           onChange={onChange}
         />
       );
+    case FieldType.Barcode:
+      return <BarcodeOptions field={field} onChange={onChange} />;
     default:
       return <></>;
   }
