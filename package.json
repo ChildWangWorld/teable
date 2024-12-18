@@ -58,7 +58,8 @@
     "run:plugin": "pnpm -F '@teable/plugin' dev"
   },
   "dependencies": {
-    "cross-env": "7.0.3"
+    "cross-env": "7.0.3",
+    "lru-cache": "10.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.1",

@@ -16,6 +16,10 @@ queryStatement:
     predicate                                                           #primaryExprPredicate
     | fieldIdentifier isOp                                              #primaryExprIs
     | fieldIdentifier compOp value                                      #primaryExprCompare
+    | fieldIdentifier FULLTEXT_SYMBOL value                             #primaryExprFulltext
+    | fieldIdentifier FUZZY_SYMBOL value                                #primaryExprFuzzy
+    | fieldIdentifier RANGE_SYMBOL rangeValue                           #primaryExprRange
+    | fieldIdentifier AGGREGATE_SYMBOL aggregateFunction                #primaryExprAggregate
     ;
 
 predicate:
@@ -85,4 +89,16 @@ booleanLiteral:
 
 nullLiteral:
     NULL_SYMBOL
+    ;
+
+rangeValue:
+    OPEN_PAREN value COMMA value CLOSE_PAREN
+    ;
+
+aggregateFunction:
+    COUNT_SYMBOL
+    | SUM_SYMBOL
+    | AVG_SYMBOL
+    | MIN_SYMBOL
+    | MAX_SYMBOL
     ;
